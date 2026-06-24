@@ -1,0 +1,12 @@
+{
+  "name": "Is There Water At Five Mile Dam?",
+  "short_name": "Five Mile Dam",
+  "description": "Live Blanco River water conditions at Five Mile Dam in Kyle, TX",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1565C0",
+  "theme_color": "#1565C0",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

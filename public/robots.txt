@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://istherewaterfivemiledam.com/sitemap.xml

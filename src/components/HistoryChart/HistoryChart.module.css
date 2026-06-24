@@ -1,0 +1,32 @@
+.container {
+  width: 100%;
+}
+
+.toggleRow {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.toggle {
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: 2px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.toggle.active {
+  background: #1565C0;
+  border-color: #1565C0;
+  color: white;
+}
+
+.chartWrap {
+  position: relative;
+  height: 220px;
+}
