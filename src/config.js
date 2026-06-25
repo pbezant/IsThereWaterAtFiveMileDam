@@ -5,6 +5,12 @@ export const STATIONS = {
   SAN_MARCOS: '08171350', // Downstream — Blanco Rv at San Marcos, TX
 };
 
+// Kyle gauge (08171300) stage references — from USGS rating table
+export const KYLE_STAGES = {
+  DRY_FT: 3.5,          // Minimum rating — below this is zero discharge (dry bed)
+  DAM_OVERFLOW_FT: 5.4, // Water flows over Five Mile Dam (~50 cfs, good conditions)
+};
+
 // Discharge thresholds (cfs) at KYLE station — tune these based on local knowledge
 export const CFS_THRESHOLDS = {
   DRY: 0,    // 0 cfs → DRY

@@ -1,8 +1,6 @@
 import { motion } from 'framer-motion';
 import { useRiverData } from './hooks/useRiverData.js';
 import Hero from './components/Hero/Hero.jsx';
-import RiverScene from './components/RiverScene/RiverScene.jsx';
-import RiverGauge from './components/RiverGauge/RiverGauge.jsx';
 import DischargeCard from './components/cards/DischargeCard.jsx';
 import GageHeightCard from './components/cards/GageHeightCard.jsx';
 import TrendCard from './components/cards/TrendCard.jsx';
@@ -31,17 +29,18 @@ export default function App() {
 
   return (
     <>
-      <Hero
-        status={status}
-        kyle={{ discharge: kyle?.discharge, gageHeight: kyle?.gageHeight, trend: kyle?.trend }}
-        loading={loading}
-      />
+      {/* Hero fills viewport — HeroBackground SVG renders inside it */}
+      <div style={{ position: 'relative', height: '100vh', overflow: 'hidden' }}>
+        <Hero
+          status={status}
+          kyle={{ discharge: kyle?.discharge, gageHeight: kyle?.gageHeight, trend: kyle?.trend }}
+          weather={weather}
+          loading={loading}
+        />
+      </div>
 
       <main>
         <div className="page-content">
-
-          {/* Interactive River Scene */}
-          <RiverScene statusKey={statusKey} cfs={cfs} gageHeight={ft} />
 
           {/* Core metric cards */}
           <p className="section-label">Live River Data</p>
