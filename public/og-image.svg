@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0D47A1"/>
+      <stop offset="100%" stop-color="#3A8FD4"/>
+    </linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1565C0"/>
+      <stop offset="100%" stop-color="#0D3A80"/>
+    </linearGradient>
+    <linearGradient id="vignette" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="black" stop-opacity="0"/>
+      <stop offset="100%" stop-color="black" stop-opacity="0.45"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Sky -->
+  <rect width="1200" height="630" fill="url(#sky)"/>
+
+  <!-- Sun -->
+  <circle cx="1060" cy="130" r="115" fill="#FFD54F" opacity="0.13"/>
+  <circle cx="1060" cy="130" r="82"  fill="#FFD54F" opacity="0.88"/>
+
+  <!-- Clouds -->
+  <ellipse cx="180"  cy="90"  rx="130" ry="52" fill="white" fill-opacity="0.55"/>
+  <ellipse cx="330"  cy="72"  rx="88"  ry="38" fill="white" fill-opacity="0.45"/>
+  <ellipse cx="680"  cy="105" rx="115" ry="46" fill="white" fill-opacity="0.45"/>
+
+  <!-- River bank -->
+  <path d="M -10 520 Q 280 475 520 498 Q 720 518 940 488 Q 1120 465 1210 492 L 1210 640 L -10 640 Z"
+        fill="#4A2C0A" opacity="0.75"/>
+
+  <!-- Back water wave -->
+  <path d="M -360 440 C -270 425 -90 455 0 440 C 90 425 270 455 360 440 C 450 425 630 455 720 440 C 810 425 990 455 1080 440 C 1170 425 1350 455 1440 440 L 1440 640 L -360 640 Z"
+        fill="#0A3580" fill-opacity="0.72"/>
+
+  <!-- Front water wave -->
+  <path d="M -360 458 C -270 440 -90 476 0 458 C 90 440 270 476 360 458 C 450 440 630 476 720 458 C 810 440 990 476 1080 458 C 1170 440 1350 476 1440 458 L 1440 640 L -360 640 Z"
+        fill="url(#water)"/>
+
+  <!-- Bottom vignette -->
+  <rect width="1200" height="630" fill="url(#vignette)"/>
+
+  <!-- Main question -->
+  <text x="600" y="228"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+        font-size="72" font-weight="900" fill="white"
+        text-anchor="middle" letter-spacing="-1">
+    Is there water at
+  </text>
+  <text x="600" y="316"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+        font-size="72" font-weight="900" fill="white"
+        text-anchor="middle" letter-spacing="-1">
+    Five Mile Dam?
+  </text>
+
+  <!-- Divider -->
+  <rect x="500" y="342" width="200" height="3" rx="2" fill="white" fill-opacity="0.45"/>
+
+  <!-- Subtitle -->
+  <text x="600" y="392"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+        font-size="28" font-weight="600" fill="white" fill-opacity="0.88"
+        text-anchor="middle" letter-spacing="0.5">
+    Live Blanco River conditions · Kyle, TX
+  </text>
+
+  <!-- Data source note -->
+  <text x="600" y="442"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+        font-size="20" font-weight="400" fill="white" fill-opacity="0.6"
+        text-anchor="middle" letter-spacing="0.3">
+    Flow · Depth · Weather · Updated every 15 min from USGS
+  </text>
+
+  <!-- Domain badge -->
+  <rect x="430" y="480" width="340" height="48" rx="24" fill="white" fill-opacity="0.15"/>
+  <text x="600" y="511"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+        font-size="18" font-weight="700" fill="white" fill-opacity="0.9"
+        text-anchor="middle" letter-spacing="1" text-transform="uppercase">
+    istherewaterfivemiledam.com
+  </text>
+</svg>
