@@ -48,6 +48,20 @@ export function weatherCodeToLabel(code) {
   return 'Unknown';
 }
 
+// Collapses Open-Meteo WMO codes into the small set of visual states the hero background renders
+export function weatherCodeToCondition(code) {
+  if (code == null) return 'unknown';
+  if (code <= 1) return 'clear';
+  if (code <= 3) return 'cloudy';
+  if (code <= 48) return 'fog';
+  if (code <= 67) return 'rain';
+  if (code <= 77) return 'snow';
+  if (code <= 82) return 'rain';
+  if (code <= 86) return 'snow';
+  if (code <= 99) return 'storm';
+  return 'unknown';
+}
+
 export function weatherCodeToEmoji(code) {
   if (code == null) return '🌡️';
   if (code === 0) return '☀️';
