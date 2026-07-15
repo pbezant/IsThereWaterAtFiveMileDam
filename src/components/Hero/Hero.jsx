@@ -54,7 +54,12 @@ export default function Hero({ status, kyle, weather, loading }) {
       animate={{ backgroundColor: bg, color }}
       transition={{ duration: 0.7, ease: 'easeInOut' }}
     >
-      <HeroBackground statusKey={statusKey} gageHeight={ft} />
+      <HeroBackground
+        statusKey={statusKey}
+        gageHeight={ft}
+        weatherCode={weather?.weatherCode}
+        precipProbability={weather?.precipProbability}
+      />
 
       <div className={styles.content}>
       <motion.div
