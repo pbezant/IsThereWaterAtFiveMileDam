@@ -36,7 +36,7 @@ const W_BACK = {
   unknown: '#3D5668',
 };
 
-const SVG_WATER_TOP = 50;   // Y when 100% full (water over the dam)
+const SVG_WATER_TOP = 200;  // Y when 100% full (water over the dam) — leaves sky visible even at max fill
 const SVG_WATER_BOT = 960;  // Y when 0% (dry — below viewport)
 
 // Percentage of how full the dam is: 0% = dry bed, 100% = flowing over the dam
