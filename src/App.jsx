@@ -2,9 +2,8 @@ import { lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { useRiverData } from './hooks/useRiverData.js';
 import Hero from './components/Hero/Hero.jsx';
-import DischargeCard from './components/cards/DischargeCard.jsx';
-import GageHeightCard from './components/cards/GageHeightCard.jsx';
-import TrendCard from './components/cards/TrendCard.jsx';
+import FlowCard from './components/cards/FlowCard.jsx';
+import CardBase from './components/cards/CardBase.jsx';
 import PrecipCard from './components/cards/PrecipCard.jsx';
 import WeatherCard from './components/cards/WeatherCard.jsx';
 import ForecastCard from './components/cards/ForecastCard.jsx';
@@ -22,11 +21,13 @@ const containerVariants = {
 };
 
 export default function App() {
-  const { kyle, wimberley, sanMarcos, forecast, weather, waterQuality, status, loading } = useRiverData();
+  const {
+    kyle, wimberley, sanMarcos, forecast, weather, waterQuality, status, loading,
+    refresh, refreshing, stale, error, lastFetched,
+  } = useRiverData();
 
   const statusKey = status?.key ?? 'unknown';
-  const cfs = kyle?.discharge?.value ?? null;
-  const ft  = kyle?.gageHeight?.value ?? null;
+  const noData = !loading && !kyle;
 
   return (
     <>
@@ -39,22 +40,57 @@ export default function App() {
           kyle={{ discharge: kyle?.discharge, gageHeight: kyle?.gageHeight, trend: kyle?.trend }}
           weather={weather}
           loading={loading}
+          refresh={refresh}
+          refreshing={refreshing}
+          stale={stale}
+          error={error}
+          lastFetched={lastFetched}
         />
       </div>
 
         <div className="page-content" id="details">
 
+          {noData ? (
+            <motion.div variants={containerVariants} initial="hidden" animate="visible" style={{ marginBottom: '1.5rem' }}>
+              <CardBase label="Data unavailable">
+                <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.95rem' }}>
+                  We couldn&apos;t reach the USGS river gauge, so there&apos;s nothing reliable to show yet.
+                  Your connection may be down, or USGS may be having trouble.
+                </p>
+                <button
+                  type="button"
+                  onClick={refresh}
+                  disabled={refreshing}
+                  style={{
+                    marginTop: 14, minHeight: 44, padding: '8px 20px', borderRadius: 999,
+                    background: 'var(--color-link)', color: 'var(--color-surface)', fontWeight: 700,
+                    opacity: refreshing ? 0.7 : 1,
+                  }}
+                >
+                  {refreshing ? 'Trying again…' : 'Try again'}
+                </button>
+              </CardBase>
+            </motion.div>
+          ) : (
+            <>
           {/* Core metric cards */}
           <h2 className="section-label">Live River Data</h2>
           <motion.div
-            style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}
+            className="card-grid"
             variants={containerVariants}
             initial="hidden"
-            animate="visible"
+            whileInView="visible"
+            viewport={{ once: true, margin: '0px 0px -40px 0px' }}
           >
-            <DischargeCard discharge={kyle?.discharge} statusKey={statusKey} />
-            <GageHeightCard gageHeight={kyle?.gageHeight} gageHistory={kyle?.gageHistory} />
-            <TrendCard trend={kyle?.trend} />
+            <FlowCard
+              discharge={kyle?.discharge}
+              gageHeight={kyle?.gageHeight}
+              gageHistory={kyle?.gageHistory}
+              dischargeHistory={kyle?.dischargeHistory}
+              trend={kyle?.trend}
+              statusKey={statusKey}
+              loading={loading}
+            />
             <PrecipCard precip={kyle?.precip} />
           </motion.div>
 
@@ -72,7 +108,8 @@ export default function App() {
             className="card-grid-2"
             variants={containerVariants}
             initial="hidden"
-            animate="visible"
+            whileInView="visible"
+            viewport={{ once: true, margin: '0px 0px -40px 0px' }}
           >
             <WeatherCard weather={weather} />
             <ForecastCard forecast={forecast} />
@@ -84,7 +121,8 @@ export default function App() {
             className="card-grid-2"
             variants={containerVariants}
             initial="hidden"
-            animate="visible"
+            whileInView="visible"
+            viewport={{ once: true, margin: '0px 0px -40px 0px' }}
           >
             <UpstreamCard wimberley={wimberley} />
             <DownstreamCard sanMarcos={sanMarcos} />
@@ -95,35 +133,22 @@ export default function App() {
           <motion.div
             variants={containerVariants}
             initial="hidden"
-            animate="visible"
+            whileInView="visible"
+            viewport={{ once: true, margin: '0px 0px -40px 0px' }}
           >
             <WaterQualityCard waterQuality={waterQuality} />
           </motion.div>
+
+            </>
+          )}
 
           {/* About */}
           <About />
         </div>
       </main>
 
-      <footer className="page-content">
-          <div style={{
-            textAlign: 'center',
-            padding: '0 0 24px',
-            fontSize: '0.78rem',
-            color: 'var(--color-text-muted)',
-            lineHeight: 1.8,
-          }}>
-            <div>
-              Data from <a href="https://waterservices.usgs.gov/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-link)' }}>USGS Water Services</a>,{' '}
-              <a href="https://api.water.noaa.gov/nwps/v1/docs/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-link)' }}>NWS NWPS</a>,{' '}
-              <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-link)' }}>Open-Meteo</a>, and{' '}
-              <a href="https://www.waterqualitydata.us/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-link)' }}>EPA Water Quality Portal</a>.
-            </div>
-            <div style={{ marginTop: 4 }}>
-              All data is provisional. This site is not affiliated with any government agency.
-              Not a substitute for official flood warnings or emergency services.
-            </div>
-          </div>
+      <footer className="page-content" style={{ textAlign: 'center', padding: '0 var(--space-4) 48px', fontSize: '0.78rem', color: 'var(--color-text-muted)' }}>
+        Not a substitute for official flood warnings or emergency services.
       </footer>
     </>
   );

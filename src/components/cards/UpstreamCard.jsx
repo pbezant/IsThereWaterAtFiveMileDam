@@ -48,7 +48,7 @@ export default function UpstreamCard({ wimberley }) {
         </div>
       )}
       <div style={{ marginTop: 4, fontSize: '0.72rem', color: 'var(--color-text-muted)' }}>
-        USGS 08171000 · Blanco Rv at Wimberley · Tap for flood stages
+        USGS 08171000 · Blanco Rv at Wimberley
       </div>
     </CardBase>
   );

@@ -39,7 +39,7 @@ export default function DownstreamCard({ sanMarcos }) {
         </div>
       )}
       <div style={{ marginTop: 4, fontSize: '0.72rem', color: 'var(--color-text-muted)' }}>
-        USGS 08171350 · Blanco Rv at San Marcos · 5-min updates · Tap for info
+        USGS 08171350 · Blanco Rv at San Marcos
       </div>
     </CardBase>
   );

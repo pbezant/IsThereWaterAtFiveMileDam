@@ -46,7 +46,7 @@ export default function WaterQualityCard({ waterQuality }) {
       <QStat label="Dissolved Oxygen" value={dissolvedOxygen} unit="mg/L" />
       <QStat label="Conductivity" value={conductivity} unit="µS/cm" />
       <div style={{ marginTop: 10, fontSize: '0.72rem', color: 'var(--color-text-muted)', fontStyle: 'italic' }}>
-        Volunteer monitoring · Not real-time · Tap for source info
+        Volunteer monitoring · Not real-time
       </div>
     </CardBase>
   );

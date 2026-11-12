@@ -65,3 +65,53 @@ export function classifyByCfs(cfs) {
   if (cfs < CFS_THRESHOLDS.FLOOD) return STATUS.high;
   return STATUS.flood;
 }
+
+// Plain-English guidance per activity. `level` is ok | caution | no — the UI always
+// pairs it with an icon and text, never colour alone.
+export function activityAdvice(statusKey) {
+  const A = (swim, paddle, fish, dog) => [
+    { id: 'swim', label: 'Swim', ...swim },
+    { id: 'float', label: 'Paddle / float', ...paddle },
+    { id: 'fish', label: 'Fish', ...fish },
+    { id: 'dog', label: 'Dogs', ...dog },
+  ];
+  switch (statusKey) {
+    case 'dry':
+      return A(
+        { level: 'no', note: 'No water' },
+        { level: 'no', note: 'No water' },
+        { level: 'no', note: 'No water' },
+        { level: 'ok', note: 'Dry bed, fine to walk' },
+      );
+    case 'low':
+      return A(
+        { level: 'no', note: 'Too shallow' },
+        { level: 'no', note: 'Too shallow to float' },
+        { level: 'caution', note: 'Small pools only' },
+        { level: 'ok', note: 'Fine for wading' },
+      );
+    case 'good':
+      return A(
+        { level: 'ok', note: 'Good conditions' },
+        { level: 'ok', note: 'Good to float' },
+        { level: 'ok', note: 'Good wading' },
+        { level: 'ok', note: 'Fine, watch the current' },
+      );
+    case 'high':
+      return A(
+        { level: 'no', note: 'Current too strong' },
+        { level: 'caution', note: 'Experienced only' },
+        { level: 'caution', note: 'Stay on the bank' },
+        { level: 'caution', note: 'Keep out of the water' },
+      );
+    case 'flood':
+      return A(
+        { level: 'no', note: 'Stay out' },
+        { level: 'no', note: 'Stay out' },
+        { level: 'no', note: 'Stay away' },
+        { level: 'no', note: 'Stay away' },
+      );
+    default:
+      return null;
+  }
+}

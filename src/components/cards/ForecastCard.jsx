@@ -55,7 +55,6 @@ export default function ForecastCard({ forecast }) {
       {issuedTime && (
         <div style={{ marginTop: 6, fontSize: '0.72rem', color: 'var(--color-text-muted)' }}>
           Issued {new Date(issuedTime).toLocaleString('en-US', { hour: 'numeric', minute: '2-digit' })}
-          {' '}· Tap for source
         </div>
       )}
     </CardBase>
