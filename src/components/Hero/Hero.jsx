@@ -1,4 +1,4 @@
-import { motion, AnimatePresence, useMotionValue, useTransform, animate } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, useTransform, useReducedMotion, animate } from 'framer-motion';
 import { useEffect } from 'react';
 import styles from './Hero.module.css';
 import HeroBackground from './HeroBackground.jsx';
@@ -27,16 +27,24 @@ const textColors = {
 const trendLabels = { rising: '↑ Rising', falling: '↓ Falling', steady: '→ Steady' };
 
 function AnimatedNumber({ target, decimals = 0 }) {
+  const reduce = useReducedMotion();
   const count = useMotionValue(0);
-  const display = useTransform(count, v =>
-    decimals > 0 ? v.toFixed(decimals) : Math.round(v).toLocaleString()
-  );
+  const format = v => (decimals > 0 ? v.toFixed(decimals) : Math.round(v).toLocaleString());
+  const display = useTransform(count, format);
   useEffect(() => {
     if (target == null) return;
+    if (reduce) { count.set(target); return; }
     const ctrl = animate(count, target, { duration: 1.2, ease: 'easeOut' });
     return ctrl.stop;
-  }, [target, count]);
-  return target != null ? <motion.span>{display}</motion.span> : <span>—</span>;
+  }, [target, count, reduce]);
+  if (target == null) return <span>—</span>;
+  // The counting number is hidden from assistive tech so it never announces "0"; the final value is.
+  return (
+    <>
+      <motion.span aria-hidden="true">{display}</motion.span>
+      <span className="visually-hidden">{format(target)}</span>
+    </>
+  );
 }
 
 export default function Hero({ status, kyle, weather, loading }) {
@@ -51,6 +59,7 @@ export default function Hero({ status, kyle, weather, loading }) {
   return (
     <motion.section
       className={styles.hero}
+      aria-labelledby="hero-title"
       animate={{ backgroundColor: bg, color }}
       transition={{ duration: 0.7, ease: 'easeInOut' }}
     >
@@ -72,6 +81,7 @@ export default function Hero({ status, kyle, weather, loading }) {
       </motion.div>
 
       <motion.h1
+        id="hero-title"
         className={styles.question}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -88,6 +98,7 @@ export default function Hero({ status, kyle, weather, loading }) {
           </motion.div>
         ) : (
           <motion.div key={statusKey}
+            role="status" aria-live="polite" aria-atomic="true"
             initial={{ opacity: 0, scale: 0.94 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 1.04 }}
@@ -108,34 +119,34 @@ export default function Hero({ status, kyle, weather, loading }) {
       >
         {/* Flow */}
         <div className={styles.stat}>
-          <div className={styles.stat_value}>
+          <div className={styles.statValue}>
             <AnimatedNumber target={cfs} decimals={0} />
           </div>
-          <div className={styles.stat_unit}>cfs</div>
-          <div className={styles.stat_label}>Flow</div>
-          <div className={styles.stat_trend}>{trendLabels[dir]}</div>
+          <div className={styles.statUnit}>cfs</div>
+          <div className={styles.statLabel}>Flow</div>
+          <div className={styles.statTrend}>{trendLabels[dir]}</div>
         </div>
 
         {/* Depth */}
         <div className={styles.stat}>
-          <div className={styles.stat_value}>
+          <div className={styles.statValue}>
             <AnimatedNumber target={ft} decimals={2} />
           </div>
-          <div className={styles.stat_unit}>ft</div>
-          <div className={styles.stat_label}>Gage Height</div>
-          <div className={styles.stat_trend} style={{ opacity: 0 }}>—</div>
+          <div className={styles.statUnit}>ft</div>
+          <div className={styles.statLabel}>Gage Height</div>
+          <div className={styles.statTrend} style={{ opacity: 0 }} aria-hidden="true">—</div>
         </div>
 
         {/* Weather */}
         <div className={styles.stat}>
-          <div className={styles.stat_value} style={{ fontSize: 'clamp(1.4rem, 3.5vw, 2rem)' }}>
+          <div className={styles.statValue} style={{ fontSize: 'clamp(1.4rem, 3.5vw, 2rem)' }}>
             {weather ? (
-              <span>{weatherCodeToEmoji(weather.weatherCode)} {Math.round(weather.tempF)}°</span>
+              <span><span aria-hidden="true">{weatherCodeToEmoji(weather.weatherCode)} </span>{Math.round(weather.tempF)}°F</span>
             ) : '—'}
           </div>
-          <div className={styles.stat_unit}>°F</div>
-          <div className={styles.stat_label}>Weather</div>
-          <div className={styles.stat_trend}>
+          <div className={styles.statUnit}>{weather ? weatherCodeToLabel(weather.weatherCode) : ""}</div>
+          <div className={styles.statLabel}>Weather</div>
+          <div className={styles.statTrend}>
             {weather ? `${weather.humidity}% humidity` : ''}
           </div>
         </div>
@@ -157,12 +168,13 @@ export default function Hero({ status, kyle, weather, loading }) {
 
       {status && !status.safe && status.key !== 'unknown' && (
         <motion.div
-          className={styles.safety_warning}
+          className={styles.safetyWarning}
+          role="alert"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
         >
-          ⚠️ Do not enter the water — dangerous conditions
+          <span aria-hidden="true">⚠️ </span>Do not enter the water — dangerous conditions
         </motion.div>
       )}
       </div>

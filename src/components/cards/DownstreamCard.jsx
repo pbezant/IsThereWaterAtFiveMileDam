@@ -13,7 +13,7 @@ export default function DownstreamCard({ sanMarcos }) {
           <p>The San Marcos gauge is downstream of Five Mile Dam where the Blanco meets the San Marcos River.</p>
           <p style={{ marginTop: 8 }}>Updates every ~5 minutes. Operated in cooperation with the Guadalupe-Blanco River Authority (GBRA).</p>
           <p style={{ marginTop: 8 }}>
-            <a href="https://waterdata.usgs.gov/monitoring-location/USGS-08171350/" target="_blank" rel="noopener noreferrer" style={{ color: '#1565C0' }}>
+            <a href="https://waterdata.usgs.gov/monitoring-location/USGS-08171350/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-link)' }}>
               USGS 08171350 →
             </a>
           </p>

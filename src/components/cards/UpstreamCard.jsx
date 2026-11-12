@@ -23,7 +23,7 @@ export default function UpstreamCard({ wimberley }) {
             Moderate: {WIMBERLEY_STAGES.MODERATE} ft · Major: {WIMBERLEY_STAGES.MAJOR} ft
           </p>
           <p style={{ marginTop: 8 }}>
-            <a href="https://water.noaa.gov/gauges/08171000" target="_blank" rel="noopener noreferrer" style={{ color: '#1565C0' }}>
+            <a href="https://water.noaa.gov/gauges/08171000" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-link)' }}>
               View Wimberley gauge →
             </a>
           </p>

@@ -31,7 +31,7 @@ export default function WaterQualityCard({ waterQuality }) {
           <p>Periodic water quality monitoring by volunteer scientists at Blanco River @ Five Mile Dam (Dudley Johnson Park).</p>
           <p style={{ marginTop: 8 }}>Data from <strong>Texas Stream Team</strong> (TXSTRMTM_WQX-15019) via the EPA Water Quality Portal. Sampled approximately quarterly — this is <em>not</em> real-time data.</p>
           <p style={{ marginTop: 8 }}>
-            <a href="https://www.waterqualitydata.us/provider/STORET/TXSTRMTM_WQX/TXSTRMTM_WQX-15019/" target="_blank" rel="noopener noreferrer" style={{ color: '#1565C0' }}>
+            <a href="https://www.waterqualitydata.us/provider/STORET/TXSTRMTM_WQX/TXSTRMTM_WQX-15019/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-link)' }}>
               View all samples →
             </a>
           </p>

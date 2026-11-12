@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { useRiverData } from './hooks/useRiverData.js';
 import Hero from './components/Hero/Hero.jsx';
@@ -10,7 +11,7 @@ import ForecastCard from './components/cards/ForecastCard.jsx';
 import UpstreamCard from './components/cards/UpstreamCard.jsx';
 import DownstreamCard from './components/cards/DownstreamCard.jsx';
 import WaterQualityCard from './components/cards/WaterQualityCard.jsx';
-import HistoryChart from './components/HistoryChart/HistoryChart.jsx';
+const HistoryChart = lazy(() => import('./components/HistoryChart/HistoryChart.jsx'));
 import About from './components/About/About.jsx';
 
 const containerVariants = {
@@ -29,8 +30,10 @@ export default function App() {
 
   return (
     <>
+      <a className="skip-link" href="#details">Skip to river details</a>
+      <main>
       {/* Hero fills viewport — HeroBackground SVG renders inside it */}
-      <div style={{ position: 'relative', height: '100vh', overflow: 'hidden' }}>
+      <div className="hero-wrap">
         <Hero
           status={status}
           kyle={{ discharge: kyle?.discharge, gageHeight: kyle?.gageHeight, trend: kyle?.trend }}
@@ -39,11 +42,10 @@ export default function App() {
         />
       </div>
 
-      <main>
-        <div className="page-content">
+        <div className="page-content" id="details">
 
           {/* Core metric cards */}
-          <p className="section-label">Live River Data</p>
+          <h2 className="section-label">Live River Data</h2>
           <motion.div
             style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}
             variants={containerVariants}
@@ -57,13 +59,15 @@ export default function App() {
           </motion.div>
 
           {/* 7-day history chart */}
-          <HistoryChart
-            dischargeHistory={kyle?.dischargeHistory}
-            gageHistory={kyle?.gageHistory}
-          />
+          <Suspense fallback={<div style={{ minHeight: 330 }} aria-hidden="true" />}>
+            <HistoryChart
+              dischargeHistory={kyle?.dischargeHistory}
+              gageHistory={kyle?.gageHistory}
+            />
+          </Suspense>
 
           {/* Weather + Forecast */}
-          <p className="section-label">Conditions &amp; Forecast</p>
+          <h2 className="section-label">Conditions &amp; Forecast</h2>
           <motion.div
             className="card-grid-2"
             variants={containerVariants}
@@ -75,7 +79,7 @@ export default function App() {
           </motion.div>
 
           {/* Upstream + Downstream context */}
-          <p className="section-label">River Context</p>
+          <h2 className="section-label">River Context</h2>
           <motion.div
             className="card-grid-2"
             variants={containerVariants}
@@ -87,7 +91,7 @@ export default function App() {
           </motion.div>
 
           {/* Water Quality (historical) */}
-          <p className="section-label">Historical Water Quality</p>
+          <h2 className="section-label">Historical Water Quality</h2>
           <motion.div
             variants={containerVariants}
             initial="hidden"
@@ -98,27 +102,29 @@ export default function App() {
 
           {/* About */}
           <About />
+        </div>
+      </main>
 
-          <footer style={{
+      <footer className="page-content">
+          <div style={{
             textAlign: 'center',
-            padding: '24px 0 48px',
+            padding: '0 0 24px',
             fontSize: '0.78rem',
             color: 'var(--color-text-muted)',
             lineHeight: 1.8,
           }}>
             <div>
-              Data from <a href="https://waterservices.usgs.gov/" target="_blank" rel="noopener noreferrer" style={{ color: '#1565C0' }}>USGS Water Services</a>,{' '}
-              <a href="https://api.water.noaa.gov/nwps/v1/docs/" target="_blank" rel="noopener noreferrer" style={{ color: '#1565C0' }}>NWS NWPS</a>,{' '}
-              <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer" style={{ color: '#1565C0' }}>Open-Meteo</a>, and{' '}
-              <a href="https://www.waterqualitydata.us/" target="_blank" rel="noopener noreferrer" style={{ color: '#1565C0' }}>EPA Water Quality Portal</a>.
+              Data from <a href="https://waterservices.usgs.gov/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-link)' }}>USGS Water Services</a>,{' '}
+              <a href="https://api.water.noaa.gov/nwps/v1/docs/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-link)' }}>NWS NWPS</a>,{' '}
+              <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-link)' }}>Open-Meteo</a>, and{' '}
+              <a href="https://www.waterqualitydata.us/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-link)' }}>EPA Water Quality Portal</a>.
             </div>
             <div style={{ marginTop: 4 }}>
               All data is provisional. This site is not affiliated with any government agency.
               Not a substitute for official flood warnings or emergency services.
             </div>
-          </footer>
-        </div>
-      </main>
+          </div>
+      </footer>
     </>
   );
 }

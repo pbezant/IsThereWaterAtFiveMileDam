@@ -36,7 +36,9 @@
   --color-border: #e2e8f0;
   --color-text-primary: #1a202c;
   --color-text-secondary: #4a5568;
-  --color-text-muted: #718096;
+  --color-text-muted: #5a6678;
+  --color-link: #1565c0;
+  --focus-ring: #1565c0;
 
   /* Water palette */
   --color-water-deep: #0D47A1;
@@ -90,6 +92,8 @@
     --color-text-primary: #f7fafc;
     --color-text-secondary: #e2e8f0;
     --color-text-muted: #a0aec0;
+    --color-link: #64b5f6;
+    --focus-ring: #90caf9;
     --shadow-card: 0 2px 8px rgba(0,0,0,0.3), 0 1px 3px rgba(0,0,0,0.2);
     --shadow-card-hover: 0 8px 24px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.3);
   }

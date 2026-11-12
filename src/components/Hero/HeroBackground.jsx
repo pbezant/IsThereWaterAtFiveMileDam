@@ -1,4 +1,5 @@
-import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { KYLE_STAGES } from '../../config.js';
 import { weatherCodeToCondition } from '../../utils/formatters.js';
 
@@ -65,7 +66,34 @@ function buildWave(y, amp, segments = 7) {
   return d;
 }
 
+// True while the element is on screen and the tab is visible. Used to stop the
+// costly particle layers (rain / snow) when nobody can see them.
+function useOnScreen(ref) {
+  const [on, setOn] = useState(true);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    let inView = true;
+    let tabVisible = !document.hidden;
+    const update = () => setOn(inView && tabVisible);
+    const io = typeof IntersectionObserver !== 'undefined'
+      ? new IntersectionObserver(([e]) => { inView = e.isIntersecting; update(); }, { threshold: 0 })
+      : null;
+    io?.observe(el);
+    const onVis = () => { tabVisible = !document.hidden; update(); };
+    document.addEventListener('visibilitychange', onVis);
+    return () => { io?.disconnect(); document.removeEventListener('visibilitychange', onVis); };
+  }, [ref]);
+  return on;
+}
+
 export default function HeroBackground({ statusKey, gageHeight, weatherCode, precipProbability }) {
+  const svgRef = useRef(null);
+  const reduce = useReducedMotion();
+  const onScreen = useOnScreen(svgRef);
+  // Looping motion only runs when the user allows it and the hero is actually visible
+  const loop = !reduce;
+  const particles = !reduce && onScreen;
   const sk = statusKey ?? 'unknown';
   const isDry = sk === 'dry';
 
@@ -86,6 +114,7 @@ export default function HeroBackground({ statusKey, gageHeight, weatherCode, pre
 
   return (
     <svg
+      ref={svgRef}
       viewBox="0 0 1440 900"
       preserveAspectRatio="xMidYMid slice"
       style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 0 }}
@@ -119,11 +148,11 @@ export default function HeroBackground({ statusKey, gageHeight, weatherCode, pre
             transition={{ duration: 0.8 }}
           >
             <motion.circle cx={1080} cy={155} r={135} fill="#FFD54F" fillOpacity={0.13}
-              animate={{ scale: [1, 1.18, 1] }}
+              animate={loop ? { scale: [1, 1.18, 1] } : undefined}
               transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.4 }}
             />
             <motion.circle cx={1080} cy={155} r={95} fill="#FFD54F" fillOpacity={0.9}
-              animate={{ scale: [1, 1.05, 1] }}
+              animate={loop ? { scale: [1, 1.05, 1] } : undefined}
               transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
             />
           </motion.g>
@@ -142,7 +171,7 @@ export default function HeroBackground({ statusKey, gageHeight, weatherCode, pre
               { cx: 1220, cy: 90, rx: 130, ry: 52 },
             ].map((c, i) => (
               <motion.ellipse key={i} {...c} fill="white" fillOpacity={condition === 'fog' ? 0.8 : 0.62}
-                animate={{ cx: [c.cx, c.cx + 18, c.cx] }}
+                animate={loop ? { x: [0, 18, 0] } : undefined}
                 transition={{ duration: 10 + i * 3.5, repeat: Infinity, ease: 'easeInOut' }}
               />
             ))}
@@ -162,7 +191,7 @@ export default function HeroBackground({ statusKey, gageHeight, weatherCode, pre
               { cx: 1240, cy: 70,  rx: 160, ry: 60 },
             ].map((c, i) => (
               <motion.ellipse key={i} {...c} fill="#78909C" fillOpacity={0.78}
-                animate={{ cy: [c.cy, c.cy + 8, c.cy] }}
+                animate={loop ? { y: [0, 8, 0] } : undefined}
                 transition={{ duration: 4 + i * 0.8, repeat: Infinity, ease: 'easeInOut' }}
               />
             ))}
@@ -184,17 +213,17 @@ export default function HeroBackground({ statusKey, gageHeight, weatherCode, pre
               <motion.ellipse key={i} {...c}
                 fill="#1E2D35"
                 fillOpacity={0.92}
-                animate={{ cy: [c.cy, c.cy + 10, c.cy] }}
+                animate={loop ? { y: [0, 10, 0] } : undefined}
                 transition={{ duration: 3.5 + i * 0.8, repeat: Infinity, ease: 'easeInOut' }}
               />
             ))}
 
-            <motion.path
+            {loop && <motion.path
               d="M 700 45 L 680 135 L 702 135 L 675 235"
               stroke="#FFD54F" strokeWidth={3.5} fill="none" strokeLinecap="round"
               animate={{ opacity: [0, 0, 0, 1, 0, 0, 0] }}
               transition={{ duration: 5, repeat: Infinity, delay: 2 }}
-            />
+            />}
           </motion.g>
         )}
 
@@ -202,7 +231,7 @@ export default function HeroBackground({ statusKey, gageHeight, weatherCode, pre
 
       {/* Precipitation overlay — drawn last so it falls in front of the whole scene */}
       <AnimatePresence>
-        {(isRainy || isStormy) && (
+        {particles && (isRainy || isStormy) && (
           <motion.g key={`precip-${condition}`}
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             transition={{ duration: 0.6 }}
@@ -227,7 +256,7 @@ export default function HeroBackground({ statusKey, gageHeight, weatherCode, pre
           </motion.g>
         )}
 
-        {isSnowy && (
+        {particles && isSnowy && (
           <motion.g key="snow"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             transition={{ duration: 0.6 }}
@@ -285,10 +314,11 @@ export default function HeroBackground({ statusKey, gageHeight, weatherCode, pre
             transition={{ duration: 1 }}
           >
             <motion.g
-              animate={{ x: [0, -SEG] }}
+              animate={loop ? { x: [0, -SEG] } : undefined}
               transition={{ duration: spd * 1.55, repeat: Infinity, ease: 'linear' }}
             >
-              <path d={backWave} fill={W_BACK[sk]} fillOpacity={0.72} />
+              <motion.path initial={false} animate={{ d: backWave }} transition={{ duration: 1.2, ease: 'easeInOut' }}
+                fill={W_BACK[sk]} fillOpacity={0.72} />
             </motion.g>
           </motion.g>
         )}
@@ -302,10 +332,11 @@ export default function HeroBackground({ statusKey, gageHeight, weatherCode, pre
             transition={{ duration: 1 }}
           >
             <motion.g
-              animate={{ x: [0, -SEG] }}
+              animate={loop ? { x: [0, -SEG] } : undefined}
               transition={{ duration: spd, repeat: Infinity, ease: 'linear' }}
             >
-              <path d={frontWave} fill="url(#hbg-water)" />
+              <motion.path initial={false} animate={{ d: frontWave }} transition={{ duration: 1.2, ease: 'easeInOut' }}
+                fill="url(#hbg-water)" />
             </motion.g>
           </motion.g>
         )}
