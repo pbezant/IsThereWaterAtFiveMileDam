@@ -20,7 +20,7 @@ export default function PrecipCard({ precip }) {
           fontSize: '2.8rem',
           fontWeight: 800,
           lineHeight: 1,
-          color: hasRain ? '#1565C0' : 'var(--color-text-muted)',
+          color: hasRain ? 'var(--color-link)' : 'var(--color-text-secondary)',
           fontVariantNumeric: 'tabular-nums',
         }}>
           {value != null ? formatIn(value) : '—'}
@@ -29,9 +29,6 @@ export default function PrecipCard({ precip }) {
       </div>
       <div style={{ marginTop: 8, fontSize: '0.85rem', color: 'var(--color-text-secondary)', fontWeight: 600 }}>
         {value == null ? 'No data' : hasRain ? '🌧 Rain detected' : 'No recent rain at gauge'}
-      </div>
-      <div style={{ marginTop: 6, fontSize: '0.72rem', color: 'var(--color-text-muted)', opacity: 0.7 }}>
-        Tap for more info
       </div>
     </CardBase>
   );

@@ -23,7 +23,7 @@ export default function ForecastCard({ forecast }) {
           {issuedTime && <p style={{ marginTop: 8 }}>Issued: {formatDateTime(issuedTime)}</p>}
           <p style={{ marginTop: 4 }}>
             <a href="https://water.noaa.gov/gauges/08171300" target="_blank" rel="noopener noreferrer"
-               style={{ color: '#1565C0' }}>
+               style={{ color: 'var(--color-link)' }}>
               View on water.noaa.gov →
             </a>
           </p>
@@ -55,7 +55,6 @@ export default function ForecastCard({ forecast }) {
       {issuedTime && (
         <div style={{ marginTop: 6, fontSize: '0.72rem', color: 'var(--color-text-muted)' }}>
           Issued {new Date(issuedTime).toLocaleString('en-US', { hour: 'numeric', minute: '2-digit' })}
-          {' '}· Tap for source
         </div>
       )}
     </CardBase>
