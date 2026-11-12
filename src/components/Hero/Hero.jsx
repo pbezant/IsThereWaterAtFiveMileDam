@@ -40,7 +40,7 @@ export default function Hero({
   const noData = !loading && cfs == null;
 
   const notice = stale
-    ? `Couldn’t reach USGS. Showing the last reading from ${relativeTime(kyle?.discharge?.dateTime)}.`
+    ? `Couldn’t reach USGS. Showing the last reading we have (updated ${relativeTime(kyle?.discharge?.dateTime)}).`
     : null;
 
   return (
